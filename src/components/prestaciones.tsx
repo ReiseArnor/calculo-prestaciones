@@ -1,10 +1,10 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { ResultProps, Time} from "./calculo";
 
 const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
     const [preAviso, setPreAviso] = useState<boolean>(false);
     const [cesantia, setCesantia] = useState<boolean>(false);
-    const [vacasiones, setVacasiones] = useState<boolean>(false);
+    const [vacaciones, setVacaciones] = useState<boolean>(false);
     const [navidad, setNavidad] = useState<boolean>(false);
 
     const handlePreAvisoChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -17,9 +17,9 @@ const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
         setCesantia(checked);
     }
 
-    const handleVacasiones = (e: ChangeEvent<HTMLInputElement>) => {
+    const handleVacaciones = (e: ChangeEvent<HTMLInputElement>) => {
         const { checked } = e.target;
-        setVacasiones(checked);
+        setVacaciones(checked);
     }
 
     const handleNavidad = (e: ChangeEvent<HTMLInputElement>) => {
@@ -71,6 +71,7 @@ const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
         }
     };
 
+    // TODO: calc the amount before 1992
     if (daysWorked && dailySalary)
     {
         if (daysWorked >= Time.threeMonths && daysWorked < Time.sixMonths)
@@ -106,6 +107,65 @@ const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
 
     }
 
+    // no menor de 1 año ni mayor de 5 años, 14 días de salario ordinario
+    // despues de 5 años, 18 días de salario ordinario
+    let vacacionesResult: number = 0;
+    let vacacionesDays: number = 0;
+
+    if (dailySalary && daysWorked)
+    {
+        if (daysWorked >= Time.fiveMonths && daysWorked < Time.sixMonths){
+            vacacionesDays = 6;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.sixMonths && daysWorked < Time.sevenMonths){
+            vacacionesDays = 7;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.sevenMonths && daysWorked < Time.eightMonths){
+            vacacionesDays = 8;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.eightMonths && daysWorked < Time.nineMonths){
+            vacacionesDays = 9;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.nineMonths && daysWorked < Time.tenMonths){
+            vacacionesDays = 10;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.tenMonths && daysWorked < Time.elevenMonths){
+            vacacionesDays = 11;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.elevenMonths && daysWorked < Time.aYear){
+            vacacionesDays = 12;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.aYear && daysWorked < Time.fiveYears){
+            vacacionesDays = 14;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+        else if (daysWorked >= Time.fiveYears){
+            vacacionesDays = 18;
+            vacacionesResult = dailySalary * vacacionesDays;
+        }
+    }
+
+    const [subTotal, setSubTotal] = useState<number>(preAvisoResult + cesantiaResult + vacacionesResult);
+    useEffect(() => {
+        let temp_val = 0;
+        if (!preAviso)
+            temp_val += preAvisoResult;
+        if (cesantia)
+            temp_val += cesantiaResult;
+        if (!vacaciones)
+            temp_val += vacacionesResult;
+
+        setSubTotal(temp_val);
+    }, [preAviso, cesantia, vacaciones]);
+    
+
     return (
     <div className="content">
         <table>
@@ -127,6 +187,20 @@ const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
                     </label>
                     </td>
                     <td>{cesantia ? cesantiaResult : 0} {cesantiaDays && cesantia ? "(" + cesantiaDays + " días)": ""}</td>
+                </tr>
+                <tr>
+                    <td>¿Ha tomado las vacaciones correspondientes al último año?</td>
+                    <td>
+                    <label className="checkbox">
+                        <input type="checkbox" defaultChecked={vacaciones} onChange={handleVacaciones}/>
+                    </label>
+                    </td>
+                    <td>{vacaciones ? 0 : vacacionesResult} {vacacionesDays && !vacaciones ? "(" + vacacionesDays + " días)": ""}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Sub-Total</td>
+                    <td>{subTotal}</td>
                 </tr>
             </tbody>
         </table>

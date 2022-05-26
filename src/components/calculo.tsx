@@ -18,7 +18,13 @@ export enum Period {
 export enum Time {
     aMonth = 30,
     threeMonths = aMonth * 3,
-    sixMonths = threeMonths * 2,
+    fiveMonths = aMonth * 5,
+    sixMonths = fiveMonths + aMonth,
+    sevenMonths = sixMonths + aMonth,
+    eightMonths = sevenMonths + aMonth,
+    nineMonths = eightMonths + aMonth,
+    tenMonths = nineMonths + aMonth,
+    elevenMonths = tenMonths + aMonth,
     aYear = 365,
     fiveYears = aYear * 5,
 };
