@@ -15,6 +15,14 @@ export enum Period {
     Daily = 'diario',
 };
 
+export enum Time {
+    aMonth = 30,
+    threeMonths = aMonth * 3,
+    sixMonths = threeMonths * 2,
+    aYear = 365,
+    fiveYears = aYear * 5,
+};
+
 export enum Calculation {
     Ordinary = 'ordinario',
     Intermittent = 'intermitente',
