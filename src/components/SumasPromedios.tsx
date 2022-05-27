@@ -51,6 +51,9 @@ const SumasPromedios = ({fields, period, setDailySalary}: FormProps) => {
 
     useEffect(() => {}, [fields, period]);
 
+    console.log("field length: " + fields?.length);
+    console.log("num of salary entries: " + numSalariesEntries);
+
     return (
     <div className='content'>
         <table>
@@ -65,7 +68,7 @@ const SumasPromedios = ({fields, period, setDailySalary}: FormProps) => {
                 <tr>
                     <td>{sum}</td>
                     {fields?.length ? 
-                    <td>{promedioMensual ? promedioMensual : 0} len: {fields.length} ent: {numSalariesEntries}</td> : <td>0</td>
+                    <td>{promedioMensual ? promedioMensual : 0}</td> : <td>0</td>
                     }
                     <td>{promedioDiario ? promedioDiario : 0}</td>
                 </tr>

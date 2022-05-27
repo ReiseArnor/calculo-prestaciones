@@ -165,6 +165,39 @@ const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
         setSubTotal(temp_val);
     }, [preAviso, cesantia, vacaciones]);
     
+    // TODO: how is this calc?
+    let navidadResult: number = 0;
+    let navidadDays: number = 0;
+    if (dailySalary && daysWorked) {
+
+    }
+
+    const [totalRecibir, setTotalRecibir] = useState<number>(subTotal + navidadResult);
+    useEffect(() => {
+        let temp_val = 0;
+        if (subTotal)
+            temp_val += subTotal;
+        if (navidad)
+            temp_val += navidadResult;
+
+        setTotalRecibir(temp_val);
+    }, [subTotal, navidad]);
+
+    const getWorkedTime: Function = (workedDays: number) => {
+        let years = Math.trunc(workedDays / Time.aYear);
+        let months = Math.trunc((workedDays - (Time.aYear * years)) / Time.aMonth);
+        let days = workedDays - (Time.aYear * years) - (Time.aMonth * months);
+
+        let temp_string = "";
+        if (years)
+            temp_string += (years > 1 ? years +" años " : years + " año ");
+        if (months)
+            temp_string += (months > 1 ? months + " meses " : months + " mes ");
+        if (days)
+            temp_string += (days > 1 ? days + " días " : days + " día ");
+
+        return temp_string;
+    };
 
     return (
     <div className="content">
@@ -199,8 +232,27 @@ const Prestaciones = ({dailySalary, daysWorked}: ResultProps) => {
                 </tr>
                 <tr>
                     <td></td>
-                    <td>Sub-Total</td>
+                    <td>Sub-Total:</td>
                     <td>{subTotal}</td>
+                </tr>
+                <tr>
+                    <td>¿Incluis salario de navidad?</td>
+                    <td>
+                    <label className="checkbox">
+                        <input type="checkbox" defaultChecked={navidad} onChange={handleNavidad}/>
+                    </label>
+                    </td>
+                    <td>{navidad ? navidadResult : 0} {navidadDays && navidad ? "(" + navidadDays + " días)": ""}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Tiempo laborado:</td>
+                    <td>{getWorkedTime(daysWorked)}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Total a recibir:</td>
+                    <td>{totalRecibir}</td>
                 </tr>
             </tbody>
         </table>
